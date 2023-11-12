@@ -49,9 +49,11 @@ def direction(x, y, x2, y2):
     return theta, r
 
         
-
+#m1 = player, m2 = blackHole
 def gravity(distance, m1, m2, gravity):
 
-    velocity = gravity * (m1*m2) / (distance ** 2)
-
-    return velocity
+    #finds force based on distance then finds accel of m1
+    force = gravity * (m1*m2) / (math.sqrt(distance))
+    accel = force/m1
+    
+    return accel

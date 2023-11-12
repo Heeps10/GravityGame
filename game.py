@@ -2,7 +2,8 @@
 import pygame
 from pygame.locals import *
 import random
-from direction import direction
+import math
+from direction import direction, gravity
 
 # pygame setup
 pygame.init()
@@ -17,12 +18,12 @@ w, h = pygame.display.get_surface().get_size()
 #player values
 player_pos = pygame.Vector2(w/2, h/2)
 player_vel = 600
-player_mass = 6
+player_mass = 50
 
 #Object Values
 circ_x, circ_y = -200, random.randint(16, 1049)
-circ_gravity = 10
-circ_mass = 20
+circ_gravity = 20
+circ_mass = 10000
 
 #creating player
 rect_color = "white"
@@ -50,12 +51,38 @@ while running:
         circ_x = -200
         circ_y = random.randint(16, 1049)
     
-    #Find vel from Gravity, rect[0] +/-= gravity*cos(theta)
+    #dd[0] is the theta, dd[1] is the distance
+    dd = direction(rect[0], rect[1], circ_x, circ_y)
+
+    #finds accel and converts to change in distance, or movement
+    accel = gravity(dd[1], player_mass, circ_mass, circ_gravity)
+    movement = accel * dt * dt
+
+    #Works but distance matters too much in grav function
+    #checks direction to determine where movement should be given
+    if dd[0] >= 0 and dd[0] <= 90:
+        rect[0] -= abs(movement * math.cos(dd[0]))
+        rect[1] += abs(movement * math.sin(dd[0]))
+        print(movement * math.sin(dd[0]))
+    if dd[0] > 90 and dd[0] <= 180:
+        rect[0] += abs(movement * math.cos(dd[0]))
+        rect[1] += abs(movement * math.sin(dd[0]))
+        print("Q2")
+    if dd[0] < 0 and dd[0] >= -90:
+        rect[0] -= abs(movement * math.cos(dd[0]))
+        rect[1] -= abs(movement * math.sin(dd[0]))
+        print("Q3")
+    #works
+    if dd[0] < -90 and dd[0] >= -180:
+        rect[0] += movement * math.cos(dd[0])
+        rect[1] -= movement * math.sin(dd[0])
+        print("Q4")
 
     #gets keys pressed and moves rect based on the seconds since last frame
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
         rect[1] -= player_vel * dt
+        print(player_vel * dt)
         #print(rect[1])
     if keys[pygame.K_s]:
         rect[1] += player_vel * dt
