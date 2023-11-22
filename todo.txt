@@ -1,0 +1,10 @@
+Find Sprites and replace shapes
+Convert to OOP
+Figure out pixel perfect collision
+Add Boost to movement
+Add particle effects
+Fix Physics
+Figure out aim and shooting
+Create enemy
+infinite loop, scoring, game over
+Change to pygame ce?

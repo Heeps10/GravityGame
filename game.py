@@ -16,7 +16,6 @@ dt = 0
 w, h = pygame.display.get_surface().get_size()
 
 #player values
-player_pos = pygame.Vector2(w/2, h/2)
 player_vel = 600
 player_mass = 50
 
@@ -25,9 +24,9 @@ circ_x, circ_y = -200, random.randint(16, 1049)
 circ_gravity = 20
 circ_mass = 10000
 
-#creating player
+#init player shape info
 rect_color = "white"
-rect = Rect(w/2, h/2, 50, 50)
+rect = pygame.FRect(w/2, h/2, 50, 50)
 
 while running:
     # poll for events
@@ -58,31 +57,32 @@ while running:
     accel = gravity(dd[1], player_mass, circ_mass, circ_gravity)
     movement = accel * dt * dt
 
-    #Works but distance matters too much in grav function
+    #Works, figure out what to do when its too close but doesn't collide, center rect location, new object?, look up grav tutorials to figure out better solution to distance problem.
+    #Make into function or do oop to make this easier to add onto new objects
     #checks direction to determine where movement should be given
     if dd[0] >= 0 and dd[0] <= 90:
         rect[0] -= abs(movement * math.cos(dd[0]))
         rect[1] += abs(movement * math.sin(dd[0]))
-        print(movement * math.sin(dd[0]))
+        #print(movement * math.sin(dd[0]))
     if dd[0] > 90 and dd[0] <= 180:
         rect[0] += abs(movement * math.cos(dd[0]))
         rect[1] += abs(movement * math.sin(dd[0]))
-        print("Q2")
+        #print("Q2")
     if dd[0] < 0 and dd[0] >= -90:
         rect[0] -= abs(movement * math.cos(dd[0]))
         rect[1] -= abs(movement * math.sin(dd[0]))
-        print("Q3")
+        #print("Q3")
     #works
     if dd[0] < -90 and dd[0] >= -180:
         rect[0] += movement * math.cos(dd[0])
         rect[1] -= movement * math.sin(dd[0])
-        print("Q4")
+        #print("Q4")
 
     #gets keys pressed and moves rect based on the seconds since last frame
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
         rect[1] -= player_vel * dt
-        print(player_vel * dt)
+        #print(player_vel * dt)
         #print(rect[1])
     if keys[pygame.K_s]:
         rect[1] += player_vel * dt
@@ -98,10 +98,10 @@ while running:
 
     #use for gravity
     dd = direction(rect[0], rect[1], circ_x, circ_y)
-    print("Direction : ", dd[0], "Distance: ", dd[1])
+    #print("Direction : ", dd[0], "Distance: ", dd[1])
 
     #circ is multiple rects making this collision check possible
-    if pygame.Rect.colliderect(rect, circ):
+    if pygame.FRect.colliderect(rect, circ):
         rect_color = "green"
         print("Collision!")
     else:
